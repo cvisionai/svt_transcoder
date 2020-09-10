@@ -22,11 +22,20 @@ WORKDIR /work/SVT-AV1/Build
 RUN cmake .. -G"Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/cvision
 RUN make -j8 && make install
 
+WORKDIR /work
+RUN git clone https://code.videolan.org/videolan/x264.git
+WORKDIR /work/x264
+RUN ./configure --prefix=/opt/cvision --enable-shared
+RUN make -j8 && make install
+
+COPY files/cvision.conf /etc/ld.so.conf.d
+RUN ldconfig
+
 WORKDIR /work/ffmpeg
 RUN git config --global user.name DOCKER_BUILD && git config --global user.email info@cvisionai.com
 RUN git am ../SVT-HEVC/ffmpeg_plugin/0001-lavc-svt_hevc-add-libsvt-hevc-encoder-wrapper.patch
 ENV PKG_CONFIG_PATH=/opt/cvision/lib/pkgconfig
-RUN ./configure --prefix=/opt/cvision --enable-libsvthevc --enable-libsvtav1
+RUN ./configure --prefix=/opt/cvision --enable-libsvthevc --enable-libsvtav1 --enable-gpl --enable-libx264
 RUN make -j8 && make install
 
 

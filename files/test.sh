@@ -6,5 +6,7 @@ cd /scratch
 wget http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4
 ffmpeg -i ForBiggerBlazes.mp4 -c:v libsvt_hevc hevc.mp4
 ffmpeg -i ForBiggerBlazes.mp4 -c:v libsvtav1 av1.mp4
+ffmpeg -i ForBiggerBlazes.mp4 -c:v libx264 h264.mp4
 
 echo "Video files are in '/scratch'"
+du -hs /scratch/*.mp4
