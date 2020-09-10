@@ -44,6 +44,9 @@ ENV PKG_CONFIG_PATH=/opt/cvision/lib/pkgconfig
 RUN ./configure --prefix=/opt/cvision --enable-libsvthevc --enable-libsvtav1 --enable-gpl --enable-libx264 --enable-libx265
 RUN make -j8 && make install
 
+# Remove static
+RUN rm -f /opt/cvision/lib/*.a
+
 
 FROM ubuntu:20.04 as encoder
 COPY --from=builder /opt/cvision /opt/cvision
@@ -51,6 +54,6 @@ COPY files/cvision.conf /etc/ld.so.conf.d
 COPY files/test.sh /test.sh
 RUN chmod +x /test.sh
 ENV PATH="/opt/cvision/bin:${PATH}"
-RUN ldconfig
+RUN ldconfig /
 
 
