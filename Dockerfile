@@ -5,7 +5,8 @@ RUN apt-get update && \
             ca-certificates \
             build-essential \
             git cmake nasm mercurial \
-            pkg-config && \
+            pkg-config  \
+            libx265-dev libx264-dev &&\
     rm -fr /var/lib/apt/lists/*
 
 WORKDIR /work
@@ -22,17 +23,17 @@ WORKDIR /work/SVT-AV1/Build
 RUN cmake .. -G"Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/cvision
 RUN make -j8 && make install
 
-WORKDIR /work
-RUN git clone https://code.videolan.org/videolan/x264.git
-WORKDIR /work/x264
-RUN ./configure --prefix=/opt/cvision --enable-shared
-RUN make -j8 && make install
+#WORKDIR /work
+#RUN git clone https://code.videolan.org/videolan/x264.git
+#WORKDIR /work/x264
+#RUN ./configure --prefix=/opt/cvision --enable-shared
+#RUN make -j8 && make install
 
-WORKDIR /work
-RUN hg clone http://hg.videolan.org/x265
-WORKDIR /work/x265/linux_build
-RUN cmake ../source -DCMAKE_INSTALL_PREFIX=/opt/cvision
-RUN make -j8 && make install
+#WORKDIR /work
+#RUN hg clone http://hg.videolan.org/x265
+#WORKDIR /work/x265/linux_build
+#RUN cmake ../source -DCMAKE_INSTALL_PREFIX=/opt/cvision
+#RUN make -j8 && make install
 
 COPY files/cvision.conf /etc/ld.so.conf.d
 RUN ldconfig
@@ -49,6 +50,10 @@ RUN rm -f /opt/cvision/lib/*.a
 
 
 FROM ubuntu:20.04 as encoder
+RUN apt-get update && \
+    apt-get install --no-install-recommends -y \
+            libx265-179 libx264-155 && \
+    rm -fr /var/lib/apt/lists/*
 COPY --from=builder /opt/cvision /opt/cvision
 COPY files/cvision.conf /etc/ld.so.conf.d
 COPY files/test.sh /test.sh
