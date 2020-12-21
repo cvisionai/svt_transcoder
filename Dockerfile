@@ -52,7 +52,7 @@ RUN rm -f /opt/cvision/lib/*.a
 FROM ubuntu:20.04 as encoder
 RUN apt-get update && \
     apt-get install --no-install-recommends -y \
-            libx265-179 libx264-155 && \
+            libx265-179 libx264-155 libpng16-16 libfreetype6 && \
     rm -fr /var/lib/apt/lists/*
 COPY --from=builder /opt/cvision /opt/cvision
 COPY files/cvision.conf /etc/ld.so.conf.d
