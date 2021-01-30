@@ -5,7 +5,7 @@ RUN apt-get update && \
             ca-certificates \
             build-essential \
             git cmake nasm mercurial \
-            pkg-config  \
+            pkg-config openssl libssl-dev \
             libx265-dev libx264-dev libpng-dev libfreetype6-dev &&\
     rm -fr /var/lib/apt/lists/*
 
@@ -42,7 +42,7 @@ WORKDIR /work/ffmpeg
 RUN git config --global user.name DOCKER_BUILD && git config --global user.email info@cvisionai.com
 RUN git am ../SVT-HEVC/ffmpeg_plugin/0001-lavc-svt_hevc-add-libsvt-hevc-encoder-wrapper.patch
 ENV PKG_CONFIG_PATH=/opt/cvision/lib/pkgconfig
-RUN ./configure --prefix=/opt/cvision --enable-libsvthevc --enable-libsvtav1 --enable-gpl --enable-libfreetype --enable-libx264 --enable-libx265
+RUN ./configure --prefix=/opt/cvision --enable-libsvthevc --enable-libsvtav1 --enable-libfreetype --enable-libx264 --enable-libx265 --enable-openssl --enable-nonfree --enable-gpl
 RUN make -j8 && make install
 
 # Remove static
