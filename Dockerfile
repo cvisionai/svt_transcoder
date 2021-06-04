@@ -6,7 +6,7 @@ RUN apt-get update && \
             build-essential \
             git cmake nasm mercurial \
             pkg-config openssl libssl-dev \
-            libx265-dev libx264-dev libpng-dev libfreetype6-dev &&\
+            libx265-dev libx264-dev libpng-dev libfreetype6-dev libaom-dev &&\
     rm -fr /var/lib/apt/lists/*
 
 WORKDIR /work
@@ -40,9 +40,9 @@ RUN ldconfig
 
 WORKDIR /work/ffmpeg
 RUN git config --global user.name DOCKER_BUILD && git config --global user.email info@cvisionai.com
-RUN git am ../SVT-HEVC/ffmpeg_plugin/0001-lavc-svt_hevc-add-libsvt-hevc-encoder-wrapper.patch
+RUN git am ../SVT-HEVC/ffmpeg_plugin/master-0001-lavc-svt_hevc-add-libsvt-hevc-encoder-wrapper.patch
 ENV PKG_CONFIG_PATH=/opt/cvision/lib/pkgconfig
-RUN ./configure --prefix=/opt/cvision --enable-libsvthevc --enable-libsvtav1 --enable-libfreetype --enable-libx264 --enable-libx265 --enable-openssl --enable-nonfree --enable-gpl
+RUN ./configure --prefix=/opt/cvision --enable-libsvthevc --enable-libsvtav1 --enable-libfreetype --enable-libx264 --enable-libx265 --enable-libaom --enable-openssl --enable-nonfree --enable-gpl
 RUN make -j8 && make install
 
 # Remove static
@@ -52,7 +52,7 @@ RUN rm -f /opt/cvision/lib/*.a
 FROM ubuntu:20.04 as encoder
 RUN apt-get update && \
     apt-get install --no-install-recommends -y \
-            libx265-179 libx264-155 libpng16-16 libfreetype6 && \
+            libx265-179 libx264-155 libpng16-16 libfreetype6 libaom0 && \
     rm -fr /var/lib/apt/lists/*
 COPY --from=builder /opt/cvision /opt/cvision
 COPY files/cvision.conf /etc/ld.so.conf.d
