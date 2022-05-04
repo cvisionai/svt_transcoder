@@ -12,6 +12,7 @@ RUN apt-get update && \
 WORKDIR /work
 RUN git clone https://github.com/OpenVisualCloud/SVT-HEVC
 RUN git clone https://github.com/OpenVisualCloud/SVT-AV1
+RUN git clone https://github.com/OpenVisualCloud/SVT-VP9
 RUN git clone --depth=1 https://github.com/FFmpeg/FFmpeg ffmpeg
 
 WORKDIR /work/SVT-HEVC/Build/linux
@@ -21,6 +22,10 @@ RUN make install
 
 WORKDIR /work/SVT-AV1/Build
 RUN cmake .. -G"Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/cvision
+RUN make -j8 && make install
+
+WORKDIR /work/SVT-VP9/Build
+RUN cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/cvision
 RUN make -j8 && make install
 
 #WORKDIR /work
@@ -39,10 +44,19 @@ COPY files/cvision.conf /etc/ld.so.conf.d
 RUN ldconfig
 
 WORKDIR /work/ffmpeg
+
+# Setup a temporary username for git am to run
 RUN git config --global user.name DOCKER_BUILD && git config --global user.email info@cvisionai.com
+
+# Apply SVT patches for HEVC and AV1
 RUN git am ../SVT-HEVC/ffmpeg_plugin/master-0001-lavc-svt_hevc-add-libsvt-hevc-encoder-wrapper.patch
+
+# Add SVTVP9 support
+COPY files/master-0001-Add-ability-for-ffmpeg-to-run-svt-vp9.patch /work/master-0001-Add-ability-for-ffmpeg-to-run-svt-vp9.patch
+RUN patch -p1 < ../SVT-VP9/ffmpeg_plugin/master-0001-Add-ability-for-ffmpeg-to-run-svt-vp9.patch
+
 ENV PKG_CONFIG_PATH=/opt/cvision/lib/pkgconfig
-RUN ./configure --prefix=/opt/cvision --enable-libsvthevc --enable-libsvtav1 --enable-libfreetype --enable-libx264 --enable-libx265 --enable-libaom --enable-openssl --enable-nonfree --enable-gpl
+RUN ./configure --prefix=/opt/cvision --enable-libsvthevc --enable-libsvtav1 --enable-libsvtvp9 --enable-libfreetype --enable-libx264 --enable-libx265 --enable-libaom --enable-openssl --enable-nonfree --enable-gpl
 RUN make -j8 && make install
 
 # Remove static
