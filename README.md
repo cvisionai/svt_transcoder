@@ -15,16 +15,11 @@ $docker> ./test.sh
 
 ## Version Notes:
 
-*-------------*---------------------------------*
-| Docker/tag  | Description                     |
-*-------------*---------------------------------*
-| v0.0.3      | Stable release                  |
-*-------------*---------------------------------*
-| v0.0.4      | Added https support             |
-*-------------*---------------------------------*
-| v0.0.5      | Added libaom                    |
-*-------------*---------------------------------*
-| v0.0.6      | Fixed libssl runtime issue      |
-*-------------*---------------------------------*
-| v0.0.7      | Add VP9 support                 | 
-*-------------*---------------------------------*
+
+| Docker/tag  | Description                     
+------------- |-------------------------------  
+| v0.0.3      | Stable release                  
+| v0.0.4      | Added https support            
+| v0.0.5      | Added libaom                    
+| v0.0.6      | Fixed libssl runtime issue      
+| v0.0.7      | Add VP9 support                 
