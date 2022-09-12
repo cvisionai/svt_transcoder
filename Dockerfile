@@ -1,5 +1,6 @@
 FROM ubuntu:20.04 AS builder
 ENV DEBIAN_FRONTEND=noninteractive
+RUN echo "v0.0.8-force"
 RUN apt-get update && \
     apt-get install --no-install-recommends -y \
             ca-certificates \
@@ -11,7 +12,7 @@ RUN apt-get update && \
 
 WORKDIR /work
 RUN git clone https://github.com/OpenVisualCloud/SVT-HEVC
-RUN git clone https://github.com/OpenVisualCloud/SVT-AV1
+RUN git clone https://gitlab.com/AOMediaCodec/SVT-AV1.git
 RUN git clone https://github.com/OpenVisualCloud/SVT-VP9
 RUN git clone --depth=1 https://github.com/FFmpeg/FFmpeg ffmpeg
 
