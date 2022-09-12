@@ -8,7 +8,7 @@ docker build -t cvisionai/svt_encoder .
 
 # Running image:
 
-docker run --rm -ti cvisionai/svt_encoder
+docker run --rm -ti --privileged cvisionai/svt_encoder
 
 ## Testing image
 $docker> ./test.sh
@@ -23,3 +23,5 @@ $docker> ./test.sh
 | v0.0.5      | Added libaom                    
 | v0.0.6      | Fixed libssl runtime issue      
 | v0.0.7      | Add VP9 support                 
+| v0.0.8      | Update path to libsvtav1
+
