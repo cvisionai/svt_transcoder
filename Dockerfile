@@ -1,6 +1,6 @@
 FROM ubuntu:20.04 AS builder
 ENV DEBIAN_FRONTEND=noninteractive
-RUN echo "v0.0.8-force"
+
 RUN apt-get update && \
     apt-get install --no-install-recommends -y \
             ca-certificates \
@@ -11,10 +11,12 @@ RUN apt-get update && \
     rm -fr /var/lib/apt/lists/*
 
 WORKDIR /work
-RUN git clone https://github.com/OpenVisualCloud/SVT-HEVC
-RUN git clone https://gitlab.com/AOMediaCodec/SVT-AV1.git
-RUN git clone https://github.com/OpenVisualCloud/SVT-VP9
-RUN git clone --depth=1 https://github.com/FFmpeg/FFmpeg ffmpeg
+RUN git clone --single-branch https://github.com/OpenVisualCloud/SVT-HEVC && \
+    cd SVT-HEVC && git checkout eb24a06ba4ee4948f219a3246b88439a8090bd37 && cd -
+RUN git clone --depth 1 --branch v1.4.1 https://gitlab.com/AOMediaCodec/SVT-AV1
+RUN git clone --single-branch https://github.com/OpenVisualCloud/SVT-VP9 && \
+    cd SVT-VP9 && git checkout 0cd1947c63547fa5e2724c8c9e8e4a6a823452cf && cd -
+RUN git clone --depth 1 --branch n5.1.3 https://github.com/FFmpeg/FFmpeg ffmpeg
 
 WORKDIR /work/SVT-HEVC/Build/linux
 RUN ./build.sh --prefix /opt/cvision release
@@ -49,12 +51,11 @@ WORKDIR /work/ffmpeg
 # Setup a temporary username for git am to run
 RUN git config --global user.name DOCKER_BUILD && git config --global user.email info@cvisionai.com
 
-# Apply SVT patches for HEVC and AV1
+# Apply SVT patches for HEVC
 RUN git am ../SVT-HEVC/ffmpeg_plugin/master-0001-lavc-svt_hevc-add-libsvt-hevc-encoder-wrapper.patch
 
 # Add SVTVP9 support
-COPY files/master-0001-Add-ability-for-ffmpeg-to-run-svt-vp9.patch /work/master-0001-Add-ability-for-ffmpeg-to-run-svt-vp9.patch
-RUN patch -p1 < ../SVT-VP9/ffmpeg_plugin/master-0001-Add-ability-for-ffmpeg-to-run-svt-vp9.patch
+RUN git am ../SVT-VP9/ffmpeg_plugin/master-0001-Add-ability-for-ffmpeg-to-run-svt-vp9.patch
 
 ENV PKG_CONFIG_PATH=/opt/cvision/lib/pkgconfig
 RUN ./configure --prefix=/opt/cvision --enable-libsvthevc --enable-libsvtav1 --enable-libsvtvp9 --enable-libfreetype --enable-libx264 --enable-libx265 --enable-libaom --enable-openssl --enable-nonfree --enable-gpl
