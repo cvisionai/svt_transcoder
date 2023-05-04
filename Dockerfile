@@ -1,6 +1,5 @@
 FROM ubuntu:20.04 AS builder
 ENV DEBIAN_FRONTEND=noninteractive
-
 RUN apt-get update && \
     apt-get install --no-install-recommends -y \
             ca-certificates \
@@ -68,12 +67,21 @@ RUN rm -f /opt/cvision/lib/*.a
 FROM ubuntu:20.04 as encoder
 RUN apt-get update && \
     apt-get install --no-install-recommends -y \
-            libx265-179 libx264-155 libpng16-16 libfreetype6 libaom0 libssl1.1 && \
+            ca-certificates libx265-179 libx264-155 libpng16-16 libfreetype6 libaom0 libssl1.1 wget unzip && \
     rm -fr /var/lib/apt/lists/*
 COPY --from=builder /opt/cvision /opt/cvision
 COPY files/cvision.conf /etc/ld.so.conf.d
 COPY files/test.sh /test.sh
 RUN chmod +x /test.sh
+
+# Install Bento4
+RUN wget http://zebulon.bok.net/Bento4/binaries/Bento4-SDK-1-6-0-632.x86_64-unknown-linux.zip
+COPY files/md5sum_checks.txt /tmp/checks.txt
+RUN md5sum --check /tmp/checks.txt
+RUN unzip Bento4-SDK-1-6-0-632.x86_64-unknown-linux.zip
+RUN cp Bento4-SDK-1-6-0-632.x86_64-unknown-linux/bin/mp4dump /opt/cvision/bin
+RUN cp Bento4-SDK-1-6-0-632.x86_64-unknown-linux/bin/mp4info /opt/cvision/bin
+
 ENV PATH="/opt/cvision/bin:${PATH}"
 RUN ldconfig /
 
