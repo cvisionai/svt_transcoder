@@ -12,10 +12,10 @@ RUN apt-get update && \
 WORKDIR /work
 RUN git clone --single-branch https://github.com/OpenVisualCloud/SVT-HEVC && \
     cd SVT-HEVC && git checkout eb24a06ba4ee4948f219a3246b88439a8090bd37 && cd -
-RUN git clone --depth 1 --branch v1.4.1 https://gitlab.com/AOMediaCodec/SVT-AV1
+RUN git clone --depth 1 --branch v1.5.0 https://gitlab.com/AOMediaCodec/SVT-AV1
 RUN git clone --single-branch https://github.com/OpenVisualCloud/SVT-VP9 && \
-    cd SVT-VP9 && git checkout 0cd1947c63547fa5e2724c8c9e8e4a6a823452cf && cd -
-RUN git clone --depth 1 --branch n5.1.3 https://github.com/FFmpeg/FFmpeg ffmpeg
+    cd SVT-VP9 && git checkout 15bd454 && cd -
+RUN git clone --depth 1 --branch n6.0 https://github.com/FFmpeg/FFmpeg ffmpeg
 
 WORKDIR /work/SVT-HEVC/Build/linux
 RUN ./build.sh --prefix /opt/cvision release
