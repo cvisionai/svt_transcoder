@@ -36,4 +36,5 @@ $docker> ./test.sh
 | v0.0.7      | Add VP9 support
 | v0.0.8      | Update path to libsvtav1
 | v0.0.9      | Lock ffmpeg to n5.1.2, add Bento4 exes
-| v0.0.10     | Pins versions of ffmpeg and all plugins
+| v0.0.10     | Pins versions of ffmpeg and all plugins, updates ffmpeg to n6.0 and libsvt to 1.5.0
+
