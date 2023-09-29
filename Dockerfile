@@ -1,4 +1,4 @@
-FROM ubuntu:20.04 AS builder
+FROM ubuntu:22.04 AS builder
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
     apt-get install --no-install-recommends -y \
@@ -64,10 +64,10 @@ RUN make -j8 && make install
 RUN rm -f /opt/cvision/lib/*.a
 
 
-FROM ubuntu:20.04 as encoder
+FROM ubuntu:22.04 as encoder
 RUN apt-get update && \
     apt-get install --no-install-recommends -y \
-            ca-certificates libx265-179 libx264-155 libpng16-16 libfreetype6 libaom0 libssl1.1 wget unzip && \
+            ca-certificates libx265-199 libx264-163 libpng16-16 libfreetype6 libaom3 libssl3 wget unzip && \
     rm -fr /var/lib/apt/lists/*
 COPY --from=builder /opt/cvision /opt/cvision
 COPY files/cvision.conf /etc/ld.so.conf.d
