@@ -12,10 +12,10 @@ RUN apt-get update && \
 WORKDIR /work
 RUN git clone --single-branch https://github.com/OpenVisualCloud/SVT-HEVC && \
     cd SVT-HEVC && git checkout eb24a06ba4ee4948f219a3246b88439a8090bd37 && cd -
-RUN git clone --depth 1 --branch v1.5.0 https://gitlab.com/AOMediaCodec/SVT-AV1
-RUN git clone --single-branch https://github.com/OpenVisualCloud/SVT-VP9 && \
-    cd SVT-VP9 && git checkout 15bd454 && cd -
-RUN git clone --depth 1 --branch n6.0 https://github.com/FFmpeg/FFmpeg ffmpeg
+RUN git clone --depth 1 --branch v1.7.0 https://gitlab.com/AOMediaCodec/SVT-AV1
+#RUN git clone --single-branch https://github.com/OpenVisualCloud/SVT-VP9 && \
+#    cd SVT-VP9 && git checkout 15bd454 && cd -
+RUN git clone --depth 1 --branch n6.1 https://github.com/FFmpeg/FFmpeg ffmpeg
 
 WORKDIR /work/SVT-HEVC/Build/linux
 RUN ./build.sh --prefix /opt/cvision release
@@ -26,9 +26,9 @@ WORKDIR /work/SVT-AV1/Build
 RUN cmake .. -G"Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/cvision
 RUN make -j8 && make install
 
-WORKDIR /work/SVT-VP9/Build
-RUN cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/cvision
-RUN make -j8 && make install
+#WORKDIR /work/SVT-VP9/Build
+#RUN cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/cvision
+#RUN make -j8 && make install
 
 #WORKDIR /work
 #RUN git clone https://code.videolan.org/videolan/x264.git
@@ -54,10 +54,10 @@ RUN git config --global user.name DOCKER_BUILD && git config --global user.email
 RUN git am ../SVT-HEVC/ffmpeg_plugin/master-0001-lavc-svt_hevc-add-libsvt-hevc-encoder-wrapper.patch
 
 # Add SVTVP9 support
-RUN git am ../SVT-VP9/ffmpeg_plugin/master-0001-Add-ability-for-ffmpeg-to-run-svt-vp9.patch
+#RUN git am ../SVT-VP9/ffmpeg_plugin/master-0001-Add-ability-for-ffmpeg-to-run-svt-vp9.patch
 
 ENV PKG_CONFIG_PATH=/opt/cvision/lib/pkgconfig
-RUN ./configure --prefix=/opt/cvision --enable-libsvthevc --enable-libsvtav1 --enable-libsvtvp9 --enable-libfreetype --enable-libx264 --enable-libx265 --enable-libaom --enable-openssl --enable-nonfree --enable-gpl
+RUN ./configure --prefix=/opt/cvision --enable-libsvthevc --enable-libsvtav1 --enable-libfreetype --enable-libx264 --enable-libx265 --enable-libaom --enable-openssl --enable-nonfree --enable-gpl
 RUN make -j8 && make install
 
 # Remove static

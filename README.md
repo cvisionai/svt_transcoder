@@ -38,3 +38,4 @@ $docker> ./test.sh
 | v0.0.9      | Lock ffmpeg to n5.1.2, add Bento4 exes
 | v0.0.10     | Pins versions of ffmpeg and all plugins, updates ffmpeg to n6.0 and libsvt to 1.5.0
 | v0.0.11     | Updates base image to Ubuntu 22.04
+| v0.0.12     | Update ffmpeg to n6.1, Update libsvt to 1.6.0, Drop libsvtvp9

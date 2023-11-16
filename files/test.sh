@@ -5,7 +5,6 @@ mkdir /scratch
 cd /scratch
 wget http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4
 ffmpeg -i ForBiggerBlazes.mp4 -c:v libsvt_hevc -vf scale=-2:2160 -crf 23 svt_hevc.mp4
-ffmpeg -i ForBiggerBlazes.mp4 -c:v libsvt_vp9 -vf scale=-2:2160 -crf 23 -preset 4 svt_vp9.mp4
 ffmpeg -i ForBiggerBlazes.mp4 -c:v libsvtav1 -vf scale=-2:2160 -crf 23 av1.mp4
 ffmpeg -i ForBiggerBlazes.mp4 -c:v libx264 -vf scale=-2:2160 -crf 23 libx264.mp4
 ffmpeg -i ForBiggerBlazes.mp4 -c:v libx265 -vf scale=-2:2160 -crf 23 libx265.mp4
