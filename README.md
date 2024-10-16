@@ -40,3 +40,5 @@ $docker> ./test.sh
 | v0.0.11     | Updates base image to Ubuntu 22.04
 | v0.0.12     | Update ffmpeg to n6.1, Update libsvt to 1.6.0, Drop libsvtvp9
 | v0.0.13     | Update ffmpeg to n7.0, Update libsvt to 2.1.0
+| v0.0.14     | Add libdav1d for faster AV1 decodes
+| v0.0.15     | Upgrade svtav1 to 2.2.1 and ffmpeg to 7.1

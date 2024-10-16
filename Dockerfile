@@ -12,10 +12,10 @@ RUN apt-get update && \
 WORKDIR /work
 RUN git clone --single-branch https://github.com/OpenVisualCloud/SVT-HEVC && \
     cd SVT-HEVC && git checkout ed80959ebb5586aa7763c91a397d44be1798587c && cd -
-RUN git clone --depth 1 --branch v2.1.0 https://gitlab.com/AOMediaCodec/SVT-AV1
+RUN git clone --depth 1 --branch v2.2.1 https://gitlab.com/AOMediaCodec/SVT-AV1
 #RUN git clone --single-branch https://github.com/OpenVisualCloud/SVT-VP9 && \
 #    cd SVT-VP9 && git checkout 15bd454 && cd -
-RUN git clone --depth 1 --branch n7.0 https://github.com/FFmpeg/FFmpeg ffmpeg
+RUN git clone --depth 1 --branch n7.1 https://github.com/FFmpeg/FFmpeg ffmpeg
 
 WORKDIR /work/SVT-HEVC/Build/linux
 RUN ./build.sh --prefix /opt/cvision release
@@ -64,7 +64,7 @@ RUN make -j8 && make install
 RUN rm -f /opt/cvision/lib/*.a
 
 
-FROM ubuntu:22.04 as encoder
+FROM ubuntu:22.04 AS encoder
 RUN apt-get update && \
     apt-get install --no-install-recommends -y \
             ca-certificates libx265-199 libx264-163 libpng16-16 libfreetype6 libaom3 libssl3 wget unzip libdav1d5 && \
