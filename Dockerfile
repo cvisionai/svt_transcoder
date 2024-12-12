@@ -12,7 +12,7 @@ RUN apt-get update && \
 WORKDIR /work
 RUN git clone --single-branch https://github.com/OpenVisualCloud/SVT-HEVC && \
     cd SVT-HEVC && git checkout ed80959ebb5586aa7763c91a397d44be1798587c && cd -
-RUN git clone --depth 1 --branch v2.2.1 https://gitlab.com/AOMediaCodec/SVT-AV1
+RUN git clone --depth 1 --branch v2.3.0 https://gitlab.com/AOMediaCodec/SVT-AV1
 #RUN git clone --single-branch https://github.com/OpenVisualCloud/SVT-VP9 && \
 #    cd SVT-VP9 && git checkout 15bd454 && cd -
 RUN git clone --depth 1 --branch n7.1 https://github.com/FFmpeg/FFmpeg ffmpeg
