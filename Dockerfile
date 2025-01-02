@@ -1,4 +1,4 @@
-FROM ubuntu:22.04 AS builder
+FROM ubuntu:24.04 AS builder
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
     apt-get install --no-install-recommends -y \
@@ -64,7 +64,7 @@ RUN make -j8 && make install
 RUN rm -f /opt/cvision/lib/*.a
 
 
-FROM ubuntu:22.04 AS encoder
+FROM ubuntu:24.04 AS encoder
 RUN apt-get update && \
     apt-get install --no-install-recommends -y \
             ca-certificates libx265-199 libx264-163 libpng16-16 libfreetype6 libaom3 libssl3 wget unzip libdav1d5 && \
