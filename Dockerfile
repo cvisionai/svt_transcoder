@@ -6,7 +6,7 @@ RUN apt-get update && \
             build-essential \
             git cmake nasm mercurial \
             pkg-config openssl libssl-dev \
-            libx265-dev libx264-dev libpng-dev libfreetype6-dev libaom-dev libdav1d-dev &&\
+            libx265-dev libx264-dev libpng-dev libfreetype6-dev libdav1d-dev &&\
     rm -fr /var/lib/apt/lists/*
 
 WORKDIR /work
@@ -57,7 +57,7 @@ RUN git am ../SVT-HEVC/ffmpeg_plugin/master-0001-lavc-svt_hevc-add-libsvt-hevc-e
 #RUN git am ../SVT-VP9/ffmpeg_plugin/master-0001-Add-ability-for-ffmpeg-to-run-svt-vp9.patch
 
 ENV PKG_CONFIG_PATH=/opt/cvision/lib/pkgconfig
-RUN ./configure --prefix=/opt/cvision --enable-libdav1d --enable-libsvthevc --enable-libsvtav1 --enable-libfreetype --enable-libx264 --enable-libx265 --enable-libaom --enable-openssl --enable-nonfree --enable-gpl
+RUN ./configure --prefix=/opt/cvision --enable-libdav1d --enable-libsvthevc --enable-libsvtav1 --enable-libfreetype --enable-libx264 --enable-libx265 --enable-openssl --enable-nonfree --enable-gpl
 RUN make -j8 && make install
 
 # Remove static
@@ -67,7 +67,7 @@ RUN rm -f /opt/cvision/lib/*.a
 FROM ubuntu:24.04 AS encoder
 RUN apt-get update && \
     apt-get install --no-install-recommends -y \
-            ca-certificates libx265-199 libx264-163 libpng16-16 libfreetype6 libaom3 libssl3 wget unzip libdav1d5 && \
+            ca-certificates libx265-199 libx264-164 libpng16-16 libfreetype6 libssl3 wget unzip libdav1d7 && \
     rm -fr /var/lib/apt/lists/*
 COPY --from=builder /opt/cvision /opt/cvision
 COPY files/cvision.conf /etc/ld.so.conf.d
