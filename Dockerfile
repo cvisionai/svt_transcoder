@@ -6,7 +6,7 @@ RUN apt-get update && \
             build-essential \
             git cmake nasm mercurial \
             pkg-config openssl libssl-dev \
-            libx265-dev libx264-dev libpng-dev libfreetype6-dev libdav1d-dev &&\
+            libx265-dev libx264-dev libpng-dev libfreetype6-dev libdav1d-dev wget unzip &&\
     rm -fr /var/lib/apt/lists/*
 
 WORKDIR /work
@@ -64,10 +64,16 @@ RUN make -j8 && make install
 RUN rm -f /opt/cvision/lib/*.a
 
 
+WORKDIR /bento4
+RUN wget http://zebulon.bok.net/Bento4/binaries/Bento4-SDK-1-6-0-632.x86_64-unknown-linux.zip
+COPY files/md5sum_checks.txt /tmp/checks.txt
+RUN md5sum --check /tmp/checks.txt
+RUN unzip Bento4-SDK-1-6-0-632.x86_64-unknown-linux.zip
+
 FROM ubuntu:24.04 AS encoder
 RUN apt-get update && \
     apt-get install --no-install-recommends -y \
-            ca-certificates libx265-199 libx264-164 libpng16-16 libfreetype6 libssl3 wget unzip libdav1d7 && \
+            ca-certificates libx265-199 libx264-164 libpng16-16 libfreetype6 libssl3 libdav1d7 && \
     rm -fr /var/lib/apt/lists/*
 COPY --from=builder /opt/cvision /opt/cvision
 COPY files/cvision.conf /etc/ld.so.conf.d
@@ -75,12 +81,8 @@ COPY files/test.sh /test.sh
 RUN chmod +x /test.sh
 
 # Install Bento4
-RUN wget http://zebulon.bok.net/Bento4/binaries/Bento4-SDK-1-6-0-632.x86_64-unknown-linux.zip
-COPY files/md5sum_checks.txt /tmp/checks.txt
-RUN md5sum --check /tmp/checks.txt
-RUN unzip Bento4-SDK-1-6-0-632.x86_64-unknown-linux.zip
-RUN cp Bento4-SDK-1-6-0-632.x86_64-unknown-linux/bin/mp4dump /opt/cvision/bin
-RUN cp Bento4-SDK-1-6-0-632.x86_64-unknown-linux/bin/mp4info /opt/cvision/bin
+COPY --from=builder /bento4/Bento4-SDK-1-6-0-632.x86_64-unknown-linux/bin/mp4dump /opt/cvision/bin
+COPY --from=builder /bento4/Bento4-SDK-1-6-0-632.x86_64-unknown-linux/bin/mp4info /opt/cvision/bin
 
 ENV PATH="/opt/cvision/bin:${PATH}"
 RUN ldconfig /
