@@ -19,9 +19,12 @@ RUN git clone --depth 1 --branch v3.1.2 https://gitlab.com/AOMediaCodec/SVT-AV1
 RUN git clone --depth 1 --branch n8.0 https://github.com/FFmpeg/FFmpeg ffmpeg
 
 WORKDIR /work/SVT-AV1/Build
-# SVT-AV1 3.1.2 supports both x86_64 and ARM with NEON optimizations
-RUN cmake .. -G"Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/cvision
-RUN make -j8 && make install
+# Disable interprocedural optimization (LTO) to avoid GCC 13 jobserver / LTO ICEs on some platforms.
+# Allow configurable parallelism.
+ARG MAKE_JOBS=8
+ENV MAKE_JOBS=${MAKE_JOBS}
+RUN cmake .. -G"Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/cvision -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=OFF
+RUN make -j"${MAKE_JOBS}" && make install
 
 #WORKDIR /work/SVT-VP9/Build
 #RUN cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/cvision
@@ -51,8 +54,8 @@ RUN git config --global user.name DOCKER_BUILD && git config --global user.email
 #RUN git am ../SVT-VP9/ffmpeg_plugin/master-0001-Add-ability-for-ffmpeg-to-run-svt-vp9.patch
 
 ENV PKG_CONFIG_PATH=/opt/cvision/lib/pkgconfig
-RUN ./configure --prefix=/opt/cvision --enable-libdav1d --enable-libsvtav1 --enable-libfreetype --enable-libx264 --enable-libx265 --enable-openssl --enable-nonfree --enable-gpl
-RUN make -j8 && make install
+RUN ./configure --prefix=/opt/cvision --enable-libdav1d --enable-libsvthevc --enable-libsvtav1 --enable-libfreetype --enable-libx264 --enable-libx265 --enable-openssl --enable-nonfree --enable-gpl
+RUN make -j"${MAKE_JOBS}" && make install
 
 # Remove static
 RUN rm -f /opt/cvision/lib/*.a
