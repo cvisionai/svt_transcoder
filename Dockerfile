@@ -54,7 +54,7 @@ RUN git config --global user.name DOCKER_BUILD && git config --global user.email
 #RUN git am ../SVT-VP9/ffmpeg_plugin/master-0001-Add-ability-for-ffmpeg-to-run-svt-vp9.patch
 
 ENV PKG_CONFIG_PATH=/opt/cvision/lib/pkgconfig
-RUN ./configure --prefix=/opt/cvision --enable-libdav1d --enable-libsvthevc --enable-libsvtav1 --enable-libfreetype --enable-libx264 --enable-libx265 --enable-openssl --enable-nonfree --enable-gpl
+RUN ./configure --prefix=/opt/cvision --enable-libdav1d --enable-libsvtav1 --enable-libfreetype --enable-libx264 --enable-libx265 --enable-openssl --enable-nonfree --enable-gpl
 RUN make -j"${MAKE_JOBS}" && make install
 
 # Remove static
