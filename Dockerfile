@@ -80,7 +80,7 @@ RUN if [ "$TARGETARCH" = "amd64" ]; then \
 FROM ubuntu:24.04 AS encoder
 RUN apt-get update && \
     apt-get install --no-install-recommends -y \
-            ca-certificates libx265-199 libx264-164 libpng16-16 libfreetype6 libssl3 xz-utils libdav1d7 && \
+            ca-certificates libx265-199 libx264-164 libpng16-16 libfreetype6 libssl3 xz-utils libdav1d7 wget && \
     rm -fr /var/lib/apt/lists/*
 COPY --from=builder /opt/cvision /opt/cvision
 COPY files/cvision.conf /etc/ld.so.conf.d
