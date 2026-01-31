@@ -15,8 +15,8 @@ WORKDIR /work
 ARG TARGETARCH
 
 # Clone repositories
-RUN git clone --depth 1 --branch v3.1.2 https://gitlab.com/AOMediaCodec/SVT-AV1
-RUN git clone --depth 1 --branch n8.0 https://github.com/FFmpeg/FFmpeg ffmpeg
+RUN git clone --depth 1 --branch v4.0.1 https://gitlab.com/AOMediaCodec/SVT-AV1
+RUN git clone --depth 1 --branch n8.0.1 https://github.com/FFmpeg/FFmpeg ffmpeg
 
 WORKDIR /work/SVT-AV1/Build
 # Disable interprocedural optimization (LTO) to avoid GCC 13 jobserver / LTO ICEs on some platforms.
@@ -54,6 +54,8 @@ RUN git config --global user.name DOCKER_BUILD && git config --global user.email
 #RUN git am ../SVT-VP9/ffmpeg_plugin/master-0001-Add-ability-for-ffmpeg-to-run-svt-vp9.patch
 
 ENV PKG_CONFIG_PATH=/opt/cvision/lib/pkgconfig
+# Fix FFmpeg n8.0.1 compatibility with SVT-AV1 v4.0.0+ (enable_adaptive_quantization renamed to aq_mode)
+RUN sed -i 's/param->enable_adaptive_quantization/param->aq_mode/' libavcodec/libsvtav1.c
 RUN ./configure --prefix=/opt/cvision --enable-libdav1d --enable-libsvtav1 --enable-libfreetype --enable-libx264 --enable-libx265 --enable-openssl --enable-nonfree --enable-gpl
 RUN make -j"${MAKE_JOBS}" && make install
 
