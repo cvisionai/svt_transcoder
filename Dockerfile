@@ -15,7 +15,7 @@ WORKDIR /work
 ARG TARGETARCH
 
 # Clone repositories
-RUN git clone --depth 1 --branch v4.0.1 https://gitlab.com/AOMediaCodec/SVT-AV1
+RUN git clone --depth 1 --branch v4.1.0 https://gitlab.com/AOMediaCodec/SVT-AV1
 RUN git clone --depth 1 --branch n8.1 https://github.com/FFmpeg/FFmpeg ffmpeg
 
 WORKDIR /work/SVT-AV1/Build
