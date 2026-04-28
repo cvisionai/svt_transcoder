@@ -6,13 +6,10 @@ RUN apt-get update && \
             build-essential \
             git cmake nasm mercurial \
             pkg-config openssl libssl-dev \
-            libx265-dev libx264-dev libpng-dev libfreetype6-dev libdav1d-dev wget unzip &&\
+            libx265-dev libx264-dev libpng-dev libfreetype6-dev libdav1d-dev &&\
     rm -fr /var/lib/apt/lists/*
 
 WORKDIR /work
-
-# Get architecture for conditional compilation
-ARG TARGETARCH
 
 # Clone repositories
 RUN git clone --depth 1 --branch v4.1.0 https://gitlab.com/AOMediaCodec/SVT-AV1
@@ -60,22 +57,15 @@ RUN make -j"${MAKE_JOBS}" && make install
 # Remove static
 RUN rm -f /opt/cvision/lib/*.a
 
-# Install Bento4 based on architecture
-WORKDIR /bento4
-ARG TARGETARCH
-RUN if [ "$TARGETARCH" = "amd64" ]; then \
-        wget http://zebulon.bok.net/Bento4/binaries/Bento4-SDK-1-6-0-632.x86_64-unknown-linux.zip && \
-        unzip Bento4-SDK-1-6-0-632.x86_64-unknown-linux.zip && \
-        cp Bento4-SDK-1-6-0-632.x86_64-unknown-linux/bin/mp4dump /opt/cvision/bin && \
-        cp Bento4-SDK-1-6-0-632.x86_64-unknown-linux/bin/mp4info /opt/cvision/bin; \
-    elif [ "$TARGETARCH" = "arm64" ]; then \
-        wget https://github.com/AmanoTeam/Bento4-Builds/releases/download/0.1/aarch64-unknown-linux-gnu.tar.xz && \
-        tar -xf aarch64-unknown-linux-gnu.tar.xz && \
-        cp aarch64-unknown-linux-gnu/bin/mp4dump /opt/cvision/bin && \
-        cp aarch64-unknown-linux-gnu/bin/mp4info /opt/cvision/bin; \
-    else \
-        echo "Unsupported architecture: $TARGETARCH" && exit 1; \
-    fi
+# Build only the Bento4 tools used by this repo.
+WORKDIR /work
+ARG BENTO4_VERSION=v1.6.0-641
+RUN git clone --depth 1 --branch "${BENTO4_VERSION}" https://github.com/axiomatic-systems/Bento4.git bento4 && \
+    cmake -S bento4 -B bento4/cmakebuild -DCMAKE_BUILD_TYPE=Release && \
+    cmake --build bento4/cmakebuild --target mp4dump mp4info --parallel "${MAKE_JOBS}" && \
+    cp bento4/cmakebuild/mp4dump /opt/cvision/bin && \
+    cp bento4/cmakebuild/mp4info /opt/cvision/bin && \
+    strip /opt/cvision/bin/mp4dump /opt/cvision/bin/mp4info
 
 FROM ubuntu:24.04 AS encoder
 RUN apt-get update && \
@@ -90,5 +80,3 @@ RUN chmod +x /test.sh
 
 ENV PATH="/opt/cvision/bin:${PATH}"
 RUN ldconfig /
-
-
