@@ -1,6 +1,6 @@
-FROM ubuntu:24.04 AS builder
+FROM ubuntu:26.04 AS builder
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && \
+RUN apt-get update && apt-get upgrade -y && \
     apt-get install --no-install-recommends -y \
             ca-certificates \
             build-essential \
@@ -67,10 +67,13 @@ RUN git clone --depth 1 --branch "${BENTO4_VERSION}" https://github.com/axiomati
     cp bento4/cmakebuild/mp4info /opt/cvision/bin && \
     strip /opt/cvision/bin/mp4dump /opt/cvision/bin/mp4info
 
-FROM ubuntu:24.04 AS encoder
-RUN apt-get update && \
+FROM ubuntu:26.04 AS encoder
+# Use Ubuntu's supported GNU provider instead of vulnerable rust-coreutils.
+RUN apt-get update && apt-get upgrade -y && \
     apt-get install --no-install-recommends -y \
-            ca-certificates libx265-199 libx264-164 libpng16-16 libfreetype6 libssl3 xz-utils libdav1d7 wget && \
+            ca-certificates libx265-215 libx264-165 libpng16-16t64 libfreetype6 libssl3t64 xz-utils libdav1d7 wget && \
+    apt-get install -y --no-install-recommends --allow-remove-essential \
+        coreutils-from-gnu coreutils-from-uutils- rust-coreutils- && \
     rm -fr /var/lib/apt/lists/*
 COPY --from=builder /opt/cvision /opt/cvision
 COPY files/cvision.conf /etc/ld.so.conf.d
