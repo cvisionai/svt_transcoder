@@ -13,7 +13,7 @@ WORKDIR /work
 
 # Clone repositories
 RUN git clone --depth 1 --branch v4.1.0 https://gitlab.com/AOMediaCodec/SVT-AV1
-RUN git clone --depth 1 --branch n8.1 https://github.com/FFmpeg/FFmpeg ffmpeg
+RUN git clone --depth 1 --branch n8.1.3 https://github.com/FFmpeg/FFmpeg ffmpeg
 
 WORKDIR /work/SVT-AV1/Build
 # Disable interprocedural optimization (LTO) to avoid GCC 13 jobserver / LTO ICEs on some platforms.
