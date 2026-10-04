@@ -71,7 +71,7 @@ FROM ubuntu:26.04 AS encoder
 # Use Ubuntu's supported GNU provider instead of vulnerable rust-coreutils.
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install --no-install-recommends -y \
-            ca-certificates libx265-215 libx264-165 libpng16-16t64 libfreetype6 libssl3t64 xz-utils libdav1d7 wget && \
+            ca-certificates libx265-215 libx264-165 libpng16-16t64 libfreetype6 libssl3t64 xz-utils libdav1d7 && \
     apt-get install -y --no-install-recommends --allow-remove-essential \
         coreutils-from-gnu coreutils-from-uutils- rust-coreutils- && \
     rm -fr /var/lib/apt/lists/*
