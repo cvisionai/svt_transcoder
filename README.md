@@ -53,3 +53,4 @@ $docker> ./test.sh
 | v0.0.14     | Add libdav1d for faster AV1 decodes
 | v0.0.15     | Upgrade svtav1 to 2.2.1 and ffmpeg to 7.1
 | v0.0.16     | Add multiarch support (x86_64 and ARM64), upgrade SVT-AV1 to 3.1.2, upgrade FFmpeg to 8.0, remove deprecated SVT-HEVC
+| v0.0.17     | Upgrade FFmpeg to 9.0.2 and SVT-AV1 to 4.2.0, make test.sh self-contained and check the encoder options tator-py uses
